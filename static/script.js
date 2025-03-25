@@ -64,7 +64,7 @@ const chart = new Chart(ctx, {
 
 async function fetchData() {
     try {
-        const response = await fetch("https://api.thingspeak.com/channels/YOUR_CHANNEL_ID/feeds.json?results=1");
+        const response = await fetch("https://api.thingspeak.com/channels/2892010/feeds.json?results=1");
         const data = await response.json();
 
         let heartRate = parseInt(data.feeds[0].field1);
@@ -98,7 +98,7 @@ async function fetchData() {
 
 
 // Fetch data every 15 seconds (ThingSpeak free limit)
-setInterval(fetchData, 15000);
+setInterval(fetchData, 2000);
 
 // Initial Data Load
 fetchData();
