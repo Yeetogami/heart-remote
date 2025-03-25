@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhak-Dhak Horela Hai</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+    
+    <h1 class="title">
+        <i class="ph ph-heart-filled beating-heart"></i> Dhak-Dhak Horela Hai
+    </h1>
+    
+    <div class="data-wrapper glassmorphism">
+        <div class="data-card">
+            <i class="ph ph-heartbeat"></i>
+            <p>Heart Rate</p>
+            <span id="heartRate">--</span> BPM
+        </div>
+        <div class="data-card">
+            <i class="ph ph-pulse"></i>
+            <p>SpO2 Level</p>
+            <span id="spo2">--</span>%
+        </div>
+    </div>
+    
+    <div class="chart-container glassmorphism">
+        <canvas id="chart"></canvas>
+    </div>
+    
+    <script src="static/script.js"></script>
+</body>
+</html>
