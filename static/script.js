@@ -69,15 +69,14 @@ async function fetchData() {
 
         if (data.feeds.length > 0) {
             const latestData = data.feeds[0];
-            const heartRate = parseInt(latestData.field1) || 0;
-            const spo2 = parseInt(latestData.field2) || 0;
+            const heartRate = parseInt(latestData.field1);
+            const spo2 = parseInt(latestData.field2);
 
-            // Update UI elements
-            document.getElementById("heartRate").innerText = heartRate > 0 ? heartRate : "--";
-            document.getElementById("spo2").innerText = spo2 > 0 ? spo2 : "--";
+            document.getElementById("heartRate").innerText = heartRate;
+            document.getElementById("spo2").innerText = spo2;
 
             // Sync beating heart animation with heart rate
-            let heartAnimationSpeed = heartRate > 0 ? 60 / heartRate : 0;
+            let heartAnimationSpeed = 60 / heartRate;
             document.querySelector(".beating-heart").style.animationDuration = `${heartAnimationSpeed}s`;
 
             // Adjust graph scaling dynamically
@@ -89,8 +88,8 @@ async function fetchData() {
             chart.options.scales.y.min = minHR;
             chart.options.scales.y.max = maxHR;
 
-            chart.data.datasets[0].data.push(heartRate > 0 ? heartRate : null);
-            chart.data.datasets[1].data.push(spo2 > 0 ? spo2 : null);
+            chart.data.datasets[0].data.push(heartRate);
+            chart.data.datasets[1].data.push(spo2);
 
             if (chart.data.datasets[0].data.length > 30) {
                 chart.data.datasets[0].data.shift();
@@ -98,8 +97,6 @@ async function fetchData() {
             }
 
             chart.update();
-        } else {
-            console.log("No new data from ThingSpeak.");
         }
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -107,7 +104,7 @@ async function fetchData() {
 }
 
 // Fetch data every 15 seconds (ThingSpeak free limit)
-setInterval(fetchData, 2000);
+setInterval(fetchData, 15000);
 
 // Initial Data Load
 fetchData();
