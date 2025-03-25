@@ -64,44 +64,38 @@ const chart = new Chart(ctx, {
 
 async function fetchData() {
     try {
-        const response = await fetch(THINGSPEAK_URL);
+        const response = await fetch("https://api.thingspeak.com/channels/YOUR_CHANNEL_ID/feeds.json?results=1");
         const data = await response.json();
 
-        if (data.feeds.length > 0) {
-            const latestData = data.feeds[0];
-            const heartRate = parseInt(latestData.field1);
-            const spo2 = parseInt(latestData.field2);
+        let heartRate = parseInt(data.feeds[0].field1);
+        let spo2 = parseInt(data.feeds[0].field2);
 
-            document.getElementById("heartRate").innerText = heartRate;
-            document.getElementById("spo2").innerText = spo2;
+        // If readings are 0 or invalid, display '--'
+        document.getElementById("heartRate").innerText = heartRate > 0 ? heartRate : "--";
+        document.getElementById("spo2").innerText = spo2 > 0 ? spo2 : "--";
 
-            // Sync beating heart animation with heart rate
-            let heartAnimationSpeed = 60 / heartRate;
-            document.querySelector(".beating-heart").style.animationDuration = `${heartAnimationSpeed}s`;
-
-            // Adjust graph scaling dynamically
-            minHR = Math.min(minHR, heartRate - 5);
-            maxHR = Math.max(maxHR, heartRate + 5);
-            minSpO2 = Math.min(minSpO2, spo2 - 2);
-            maxSpO2 = Math.max(maxSpO2, spo2 + 2);
-
-            chart.options.scales.y.min = minHR;
-            chart.options.scales.y.max = maxHR;
-
-            chart.data.datasets[0].data.push(heartRate);
-            chart.data.datasets[1].data.push(spo2);
-
-            if (chart.data.datasets[0].data.length > 30) {
-                chart.data.datasets[0].data.shift();
-                chart.data.datasets[1].data.shift();
-            }
-
-            chart.update();
+        // Stop heart animation if no valid HR
+        if (heartRate > 0) {
+            document.querySelector(".beating-heart").style.animationDuration = `${60 / heartRate}s`;
+        } else {
+            document.querySelector(".beating-heart").style.animationDuration = "0s"; // Stop animation
         }
+
+        // Update chart
+        chart.data.datasets[0].data.push(heartRate > 0 ? heartRate : null);
+        chart.data.datasets[1].data.push(spo2 > 0 ? spo2 : null);
+
+        if (chart.data.datasets[0].data.length > 30) {
+            chart.data.datasets[0].data.shift();
+            chart.data.datasets[1].data.shift();
+        }
+        chart.update();
+
     } catch (error) {
         console.error("Error fetching data:", error);
     }
 }
+
 
 // Fetch data every 15 seconds (ThingSpeak free limit)
 setInterval(fetchData, 15000);
